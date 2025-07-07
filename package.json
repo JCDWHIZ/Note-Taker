@@ -1,0 +1,26 @@
+{
+  "name": "johnproject",
+  "version": "1.0.0",
+  "description": "this is the first bafuto backend project",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "start-node": "node index.js",
+    "start-ts": "ts-node-dev src/index.ts",
+    "dev": "nodemon"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "mongodb": "^6.17.0",
+    "mongoose": "^8.13.2",
+    "nodemon": "^3.1.10",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3"
+  }
+}
