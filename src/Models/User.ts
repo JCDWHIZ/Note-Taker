@@ -1,4 +1,5 @@
 import mongoose, { Schema, model } from "mongoose";
+import CryptoJS from "crypto-js";
 
 export interface User extends mongoose.Document {
   username: string;
@@ -8,11 +9,15 @@ export interface User extends mongoose.Document {
   profilePic: string;
   dateOfBirth: string;
   Gender: Gender;
+  // role varchar
+  bio: string;
+  is_verified: boolean;
 }
 
 export enum Gender {
-  MALE = "male",
-  FEMALE = "female",
+  MALE = "MALE",
+  FEMALE = "FEMALE",
+  ATTACK_HELICOPTER = "ATTACK_HELICOPTER",
 }
 
 const UserSchema: Schema<User> = new Schema(
@@ -47,8 +52,25 @@ const UserSchema: Schema<User> = new Schema(
       enum: Object.values(Gender),
       required: true,
     },
+    bio: String,
+    is_verified: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
+
+UserSchema.pre("save", function (next) {
+  const user = this as User;
+  if (user.isModified("password") && process.env.CRYPTO_SECRET) {
+    const encryptedPassword = CryptoJS.AES.encrypt(
+      user.password,
+      process.env.CRYPTO_SECRET
+    ).toString();
+    user.password = encryptedPassword;
+  }
+  next();
+});
 
 export default model<User>("Users", UserSchema);
