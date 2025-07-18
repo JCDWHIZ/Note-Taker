@@ -12,6 +12,7 @@ export interface User extends mongoose.Document {
   // role varchar
   bio: string;
   is_verified: boolean;
+  posts: [Schema.Types.ObjectId]
 }
 
 export enum Gender {
@@ -57,6 +58,11 @@ const UserSchema: Schema<User> = new Schema(
       type: Boolean,
       default: false,
     },
+    posts: [{
+      type: Schema.Types.ObjectId,
+      ref: "Posts",
+      default: null,
+    }]
   },
   { timestamps: true }
 );

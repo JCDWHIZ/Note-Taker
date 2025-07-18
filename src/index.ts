@@ -1,5 +1,6 @@
 import express from "express";
 const userRoutes = require("./routes/user");
+const postRoutes = require("./routes/post");
 import { connectToDb } from "./config/db";
 const app = express();
 const port = 3000;
@@ -38,7 +39,8 @@ app.get("/", (req, res) => {
 connectToDb();
 
 app.use(express.json()); // Middleware to parse JSON bodies
-app.use(userRoutes);
+app.use("/api/auth", userRoutes);
+app.use("/api/posts", postRoutes);
 
 // "/users/:id" route - e.g localhost:3000/user/1
 // anything passed will be more like a parameter in the route

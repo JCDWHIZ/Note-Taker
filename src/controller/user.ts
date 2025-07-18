@@ -30,7 +30,7 @@ export const register = async (req: Request, res: Response) => {
   });
 
   // use nodemailer to send mail to the user
-  return res.send({
+  res.send({
     message: "User registered successfully",
     data: {
       username: user.username,
