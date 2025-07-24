@@ -9,10 +9,12 @@ export interface User extends mongoose.Document {
   profilePic: string;
   dateOfBirth: string;
   Gender: Gender;
-  // role varchar
+  // role varchar1
   bio: string;
+  followers: Schema.Types.ObjectId[];
+  following: Schema.Types.ObjectId[];
   is_verified: boolean;
-  posts: [Schema.Types.ObjectId]
+  posts: Schema.Types.ObjectId[];
 }
 
 export enum Gender {
@@ -58,11 +60,27 @@ const UserSchema: Schema<User> = new Schema(
       type: Boolean,
       default: false,
     },
-    posts: [{
-      type: Schema.Types.ObjectId,
-      ref: "Posts",
-      default: null,
-    }]
+    posts: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Posts",
+        default: null,
+      },
+    ],
+    followers: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Users",
+        default: null,
+      },
+    ],
+    following: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Users",
+        default: null,
+      },
+    ],
   },
   { timestamps: true }
 );

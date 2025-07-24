@@ -5,7 +5,7 @@ interface Post extends mongoose.Document {
   dislikes: number;
   caption: String;
   media: String[];
-  comments: [Schema.Types.ObjectId];
+  comments: Schema.Types.ObjectId[];
   userId: Schema.Types.ObjectId;
 }
 

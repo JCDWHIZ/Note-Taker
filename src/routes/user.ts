@@ -1,8 +1,16 @@
 import express from "express";
-const { login, register } = require("../controller/user");
+const {
+  GetUserDetails,
+  FollowUser,
+  UnFollowUser,
+} = require("../controller/user");
 const router = express.Router();
+import { AuthMiddleware } from "../Middleware/AuthMiddleware";
 
-router.route("/register").post(register);
-router.route("/login").post(login);
+router.route("/:Id").get(AuthMiddleware, GetUserDetails);
+
+router.route("/follow/:Id").put(AuthMiddleware, FollowUser);
+
+router.route("/unfollow/:Id").put(AuthMiddleware, UnFollowUser);
 
 module.exports = router;

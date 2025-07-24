@@ -76,3 +76,97 @@ export const login = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const postDetailsQuery = {
+  path: "posts",
+  populate: {
+    path: "comments",
+    populate: {
+      path: "user",
+      select: "username profilePic",
+    },
+  },
+};
+
+export const GetUserDetails = async (req: Request, res: Response) => {
+  const userId = req.params.Id;
+
+  const user = await Users.findById(userId)
+    .populate(postDetailsQuery)
+    .select("-password -__v");
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  return res.status(200).json({ data: user });
+};
+
+export const FollowUser = async (req: any, res: Response) => {
+  const userId = req.params.Id;
+  const followerId = req.user.id;
+
+  if (userId === followerId) {
+    return res.status(400).json({ message: "Cannot follow yourself" });
+  }
+
+  const user = await Users.findById(userId);
+  const follower = await Users.findById(followerId);
+
+  if (!user || !follower) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  if (user.followers.includes(followerId)) {
+    return res.status(400).json({ message: "Already following this user" });
+  }
+
+  user.followers.push(followerId);
+  follower.following.push(userId);
+
+  await user.save();
+  await follower.save();
+
+  return res.status(200).json({ message: "User followed" });
+};
+
+export const UnFollowUser = async (req: any, res: Response) => {
+  const userId = req.params.Id;
+  const followerId = req.user.id;
+
+  const user = await Users.findById(userId);
+  const follower = await Users.findById(followerId);
+
+  if (!user || !follower) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  if (!user.followers.includes(followerId)) {
+    return res.status(400).json({ message: "Not following this user" });
+  }
+
+  user.followers = user.followers.filter((id) => id.toString() !== followerId);
+  follower.following = follower.following.filter(
+    (id) => id.toString() !== userId
+  );
+
+  await user.save();
+  await follower.save();
+
+  return res.status(200).json({ message: "User unfollowed" });
+};
+
+export const GetUserPosts = async (req: any, res: Response) => {
+  const userId = req.params.Id;
+
+  const user = await Users.findById(userId).populate({
+    path: "posts",
+    options: { sort: { createdAt: -1 } },
+  });
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  return res.status(200).json({ data: user.posts });
+};

@@ -1,26 +1,11 @@
 import express from "express";
 const userRoutes = require("./routes/user");
+const authRoutes = require("./routes/auth");
 const postRoutes = require("./routes/post");
 import { connectToDb } from "./config/db";
 const app = express();
 const port = 3000;
 require("dotenv").config();
-
-// constant data to be used for routes
-const users = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "something@gmail.com",
-    age: 30,
-  },
-  {
-    id: 1,
-    name: "John Doe",
-    email: "something@gmail.com",
-    age: 30,
-  },
-];
 
 app.use((req, res, next) => {
   console.log(
@@ -39,7 +24,8 @@ app.get("/", (req, res) => {
 connectToDb();
 
 app.use(express.json()); // Middleware to parse JSON bodies
-app.use("/api/auth", userRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
 app.use("/api/posts", postRoutes);
 
 // "/users/:id" route - e.g localhost:3000/user/1
